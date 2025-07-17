@@ -75,6 +75,9 @@ dependencies {
     implementation(libs.koin.androidx.compose.navigation)
     implementation(libs.koin.compose.viewmodel)
 
+    // Glance
+    implementation(libs.androidx.glance.appwidget)
+
     // Testing Dependencies
     testImplementation(libs.ktor.client.mock)
     testImplementation(libs.mockito.core)

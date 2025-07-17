@@ -1,6 +1,7 @@
 [versions]
 agp = "8.10.0-rc04"
 coreTesting = "2.2.0"
+glanceAppwidget = "1.1.1"
 koinAndroid = "4.0.0"
 koinAndroidxCompose = "4.0.0"
 koinAndroidxComposeNavigation = "3.5.3"
@@ -35,6 +36,7 @@ kotlinxSerializationCore = "1.8.1"
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-core-testing = { module = "androidx.arch.core:core-testing", version.ref = "coreTesting" }
+androidx-glance-appwidget = { module = "androidx.glance:glance-appwidget", version.ref = "glanceAppwidget" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }

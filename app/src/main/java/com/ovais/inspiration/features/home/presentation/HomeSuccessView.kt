@@ -28,14 +28,14 @@ fun HomeSuccessView(data: QuoteUiData) {
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFF1C1C1E)) // Widget-style deep dark background
+            .background(Color(0xFF1C1C1E))
             .padding(24.dp),
         contentAlignment = Alignment.Center
     ) {
         Card(
             shape = RoundedCornerShape(20.dp),
             colors = CardDefaults.cardColors(
-                containerColor = Color(0xFF2C2C2E) // Dark card background
+                containerColor = Color(0xFF2C2C2E)
             ),
             elevation = CardDefaults.cardElevation(10.dp),
             modifier = Modifier.fillMaxWidth()

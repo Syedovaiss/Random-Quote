@@ -31,8 +31,8 @@ object WidgetNetworkClient {
                 )
             }
             engine {
-                connectTimeout = 60000
-                socketTimeout = 60000
+                connectTimeout = 10000
+                socketTimeout = 10000
             }
             install(Logging) {
                 logger = object : Logger {

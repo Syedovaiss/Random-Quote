@@ -22,8 +22,10 @@ class HomeViewModel(
         get() = _uiState.asStateFlow()
 
     fun onRetry() {
+        updateUiState(HomeUiState.Loading)
         fetchRandomQuote()
     }
+
     init {
         fetchRandomQuote()
     }

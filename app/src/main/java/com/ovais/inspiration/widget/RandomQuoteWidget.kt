@@ -1,6 +1,8 @@
 package com.ovais.inspiration.widget
 
+import android.annotation.SuppressLint
 import android.content.Context
+import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.DpSize
@@ -21,21 +23,25 @@ import androidx.glance.appwidget.updateAll
 import androidx.glance.background
 import androidx.glance.layout.Alignment
 import androidx.glance.layout.Column
-import androidx.glance.layout.Row
 import androidx.glance.layout.Spacer
 import androidx.glance.layout.fillMaxSize
 import androidx.glance.layout.height
 import androidx.glance.layout.padding
-import androidx.glance.layout.width
 import androidx.glance.text.FontWeight
 import androidx.glance.text.Text
 import androidx.glance.text.TextAlign
 import androidx.glance.text.TextStyle
+import androidx.glance.unit.ColorProvider
 import com.ovais.inspiration.core.app.presentation.InspirationActivity
 import com.ovais.inspiration.core.http.client.DefaultInspirationNetworkClient
 import com.ovais.inspiration.core.http.client.InspirationNetworkClient
 import com.ovais.inspiration.core.http.result.QuoteResult
 
+private const val NO_QUOTE = "No quotes available!"
+private const val SOME_THING_WENT_WRONG = "Something went wrong"
+private const val ANONYMOUS = "Anonymous"
+
+@SuppressLint("RestrictedApi")
 class RandomQuoteWidget() : GlanceAppWidget() {
 
     private val networkClient by lazy { WidgetNetworkClient.instance }
@@ -61,37 +67,42 @@ class RandomQuoteWidget() : GlanceAppWidget() {
         context: Context,
         id: GlanceId
     ) {
-        val result = getQuote()
+        val response = getQuote()
         provideContent {
-            when (result) {
+            when (response) {
                 is QuoteResult.Success -> QuoteView(
-                    result.result.firstOrNull()?.quote ?: "No quote available",
-                    result.result.firstOrNull()?.author ?: "Unknown"
+                    response.result.firstOrNull()?.quote ?: NO_QUOTE,
+                    response.result.firstOrNull()?.author ?: ANONYMOUS
                 )
 
-                is QuoteResult.Failure -> QuoteErrorView(result.message)
+                is QuoteResult.Failure -> {
+                    Log.e(RandomQuoteWidget::class.simpleName, response.message)
+                    QuoteErrorView()
+                }
             }
         }
     }
 
     @Composable
-    private fun QuoteErrorView(message: String) {
+    private fun QuoteErrorView() {
         Column(
             modifier = GlanceModifier
                 .fillMaxSize()
-                .background(Color.White)
+                .clickable(actionStartActivity<InspirationActivity>())
+                .background(ColorProvider(Color(0xFF1C1C1E)))
                 .padding(16.dp)
                 .cornerRadius(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = message,
+                text = SOME_THING_WENT_WRONG,
                 style = TextStyle(
                     fontSize = 16.sp,
+                    color = ColorProvider(Color(0xFFFF6B6B)),
                     textAlign = TextAlign.Center
                 ),
-                maxLines = 5,
+                maxLines = 5
             )
 
             Spacer(modifier = GlanceModifier.height(12.dp))
@@ -101,13 +112,14 @@ class RandomQuoteWidget() : GlanceAppWidget() {
                 style = TextStyle(
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Bold,
+                    color = ColorProvider(Color(0xFF58A6FF)),
                     textAlign = TextAlign.Center
                 ),
                 modifier = GlanceModifier
-                    .clickable(actionRunCallback<RetryQuoteCallback>())
-                    .padding(8.dp)
-                    .cornerRadius(8.dp)
-                    .background(Color(0xFFE0F7FA)) // Light cyan background
+                    .clickable(actionRunCallback<RefreshQuoteCallback>())
+                    .padding(horizontal = 12.dp, vertical = 6.dp)
+                    .cornerRadius(12.dp)
+                    .background(ColorProvider(Color(0xFF3A3A3C)))
             )
         }
     }
@@ -117,16 +129,18 @@ class RandomQuoteWidget() : GlanceAppWidget() {
         Column(
             modifier = GlanceModifier
                 .fillMaxSize()
-                .background(Color.White)
+                .clickable(actionStartActivity<InspirationActivity>())
+                .background(Color(0xFF1C1C1E))
                 .padding(16.dp)
-                .cornerRadius(12.dp),
+                .cornerRadius(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
                 text = "\"$quote\"",
                 style = TextStyle(
-                    fontSize = 16.sp,
+                    fontSize = 18.sp,
+                    color = ColorProvider(Color(0xFFECECEC)),
                     textAlign = TextAlign.Center
                 ),
                 maxLines = 3
@@ -138,54 +152,32 @@ class RandomQuoteWidget() : GlanceAppWidget() {
                 text = "- $author",
                 style = TextStyle(
                     fontSize = 14.sp,
-                    textAlign = TextAlign.Center,
+                    color = ColorProvider(Color(0xFFAAAAAA)),
+                    textAlign = TextAlign.Center
                 )
             )
 
-            Spacer(modifier = GlanceModifier.height(16.dp))
+            Spacer(modifier = GlanceModifier.height(20.dp))
 
-            Row(horizontalAlignment = Alignment.CenterHorizontally) {
-                Text(
-                    text = "Refresh",
-                    modifier = GlanceModifier
-                        .padding(horizontal = 8.dp)
-                        .clickable(actionRunCallback<RefreshQuoteCallback>()),
-                    style = TextStyle(
-                        fontSize = 14.sp,
-                        fontWeight = FontWeight.Bold
-                    )
+            Text(
+                text = "⟳ Refresh",
+                modifier = GlanceModifier
+                    .clickable(actionRunCallback<RefreshQuoteCallback>())
+                    .padding(horizontal = 12.dp, vertical = 6.dp)
+                    .cornerRadius(12.dp)
+                    .background(Color(0xFF3A3A3C)),
+                style = TextStyle(
+                    fontSize = 14.sp,
+                    color = ColorProvider(Color(0xFF58A6FF)),
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center
                 )
-
-                Spacer(modifier = GlanceModifier.width(16.dp))
-
-                Text(
-                    text = "Open App",
-                    modifier = GlanceModifier
-                        .padding(horizontal = 8.dp)
-                        .clickable(actionStartActivity<InspirationActivity>()),
-                    style = TextStyle(
-                        fontSize = 14.sp,
-                        fontWeight = FontWeight.Bold
-                    )
-                )
-            }
+            )
         }
     }
 
     private suspend fun getQuote(): QuoteResult {
         return apiClient.getQuote()
-    }
-}
-
-class RetryQuoteCallback : ActionCallback {
-
-
-    override suspend fun onAction(
-        context: Context,
-        glanceId: GlanceId,
-        parameters: ActionParameters
-    ) {
-        RandomQuoteWidget().updateAll(context)
     }
 }
 

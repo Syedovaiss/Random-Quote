@@ -11,7 +11,7 @@ android {
 
     defaultConfig {
         applicationId = "com.ovais.inspiration"
-        minSdk = 24
+        minSdk = 31
         targetSdk = 36
         versionCode = 1
         versionName = "1.0"
@@ -74,6 +74,9 @@ dependencies {
     implementation(libs.koin.androidx.compose)
     implementation(libs.koin.androidx.compose.navigation)
     implementation(libs.koin.compose.viewmodel)
+
+    // Glance
+    implementation(libs.androidx.glance.appwidget)
 
     // Testing Dependencies
     testImplementation(libs.ktor.client.mock)

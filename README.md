@@ -7,8 +7,7 @@
 ## 📱 Features
 
 - 🎯 Random motivational quote generator  
-- 🏠 Home Screen widget for quick inspiration  
-- 🌙 Light & Dark theme support  
+- 🏠 Home Screen widget for quick inspiration   
 - 🔁 Refresh quotes with a single tap  
 - ⚡ Smooth and modern UI with Jetpack Compose  
 
